@@ -1,16 +1,40 @@
-# This is a sample Python script.
+import pyttsx3
+import speech_recognition
+from date import datetime
+import speech_recognition as sr
+import pyttsx3 as tts
+import webbrowser
+import wikipedia
+import wolframalpha
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+
+engine = pyttsx3.init()
+voices = engine.setProperty('voices')
+engine.setProperty('voice',voices[0].id) # 0 - male, 1 - female
+activationWord = 'computer'
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def speak(text, rate=150):
+    engine.setProperty('rate', rate)
+    engine.say(text)
+    engine.runAndWait()
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def parsecommand():
+    listener = sr.Recognizer()
+    print("Listening for a command....")
+    with sr.Microphone() as source:
+        listener.pause_threshold = 2
+        input_speech = listener.listen(source)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+    try:
+        print('Recongnizing speech...')
+        query = listener.recognize_google()
+        print(f"The input speech was: {query}")
+    except Exception as exception:
+        print("I didn't quite catch that")
+        speak("I didn't quite catch that")
+        print(exception)
+        return None
+    return query
