@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 
-
-=======
 import speech_recognition as sr
 from gtts import gTTS
 
@@ -36,4 +33,4 @@ def wakeUpAI():
 
 
 wakeUpAI()
->>>>>>> workPlace
+
