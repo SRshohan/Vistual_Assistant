@@ -1,40 +1,34 @@
-import pyttsx3
-import speech_recognition
-from date import datetime
 import speech_recognition as sr
-import pyttsx3 as tts
-import webbrowser
-import wikipedia
-import wolframalpha
+from gtts import gTTS
 
-
-engine = pyttsx3.init()
-voices = engine.setProperty('voices')
-engine.setProperty('voice',voices[0].id) # 0 - male, 1 - female
-activationWord = 'computer'
-
-
-def speak(text, rate=150):
-    engine.setProperty('rate', rate)
-    engine.say(text)
-    engine.runAndWait()
-
-
-def parsecommand():
-    listener = sr.Recognizer()
-    print("Listening for a command....")
+# obtain audio from the microphone
+r = sr.Recognizer()
+def wakeUpAI():
     with sr.Microphone() as source:
-        listener.pause_threshold = 2
-        input_speech = listener.listen(source)
+        print("Say something!")
+        audio = r.listen(source)
 
+    # recognize speech using Sphinx
+    try:
+        print("Sphinx thinks you said " + r.recognize_sphinx(audio))
+    except sr.UnknownValueError:
+        print("Sphinx could not understand audio")
+    except sr.RequestError as e:
+        print("Sphinx error; {0}".format(e))
+
+    speech = r.recognize_google(audio)
 
     try:
-        print('Recongnizing speech...')
-        query = listener.recognize_google()
-        print(f"The input speech was: {query}")
-    except Exception as exception:
-        print("I didn't quite catch that")
-        speak("I didn't quite catch that")
-        print(exception)
-        return None
-    return query
+        # for testing purposes, we're just using the default API key
+        # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
+        # instead of `r.recognize_google(audio)`
+        print("You said: " + speech)
+    except sr.UnknownValueError:
+        print("Google Speech Recognition could not understand audio")
+    except sr.RequestError as e:
+        print("Could not request results from Google Speech Recognition service; {0}".format(e))
+
+    tts_en = gTTS(speech, lang='en')
+
+
+wakeUpAI()
